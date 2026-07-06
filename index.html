@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>렌트리 친구초대 프로토타입</title>
+<style>
+  :root{
+    --blue:#2b6ef2; --blue-d:#1b4fd0; --blue-l:#eaf1ff;
+    --ink:#1a1d24; --gray:#6b7280; --line:#eceef2; --bg:#f4f6f9;
+    --yellow:#ffb100; --green:#12b76a; --red:#f04438; --kko:#fee500;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  body{font-family:'Pretendard',-apple-system,'Apple SD Gothic Neo',sans-serif;background:#d9dde4;color:var(--ink);padding:20px 12px}
+  .wrap{max-width:1000px;margin:0 auto}
+  .modebar{display:flex;gap:8px;justify-content:center;margin-bottom:8px}
+  .modebar button{border:1px solid var(--line);background:#fff;color:var(--gray);font-size:13px;font-weight:700;padding:9px 18px;border-radius:22px;cursor:pointer}
+  .modebar button.on{background:var(--blue);color:#fff;border-color:var(--blue)}
+  .flowbar{display:flex;gap:6px;justify-content:center;align-items:center;margin-bottom:16px;flex-wrap:wrap;min-height:30px}
+  .flowbar .step{font-size:11.5px;color:var(--gray);background:#fff;border:1px solid var(--line);padding:5px 11px;border-radius:20px}
+  .flowbar .step.on{color:#fff;background:var(--blue);border-color:var(--blue);font-weight:700}
+  .flowbar .arw{color:#aab1bd}
+
+  .phone{width:390px;margin:0 auto;background:#fff;border-radius:36px;box-shadow:0 20px 60px rgba(20,30,60,.25);overflow:hidden;border:10px solid #12151c;position:relative}
+  .screen-scroll{height:760px;overflow-y:auto;background:var(--bg);scroll-behavior:smooth}
+  .screen-scroll::-webkit-scrollbar{width:0}
+
+  .navbar{position:sticky;top:0;z-index:20;background:#fff;border-bottom:1px solid var(--line)}
+  .navrow{display:flex;align-items:center;gap:10px;padding:14px 16px}
+  .logo{font-weight:800;font-size:20px;color:var(--blue);letter-spacing:-.5px}
+  .navrow .spacer{flex:1}
+  .icobtn{width:32px;height:32px;border-radius:10px;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer;border:none}
+  .backbtn{display:flex;align-items:center;gap:6px;font-size:15px;font-weight:600;color:var(--ink);cursor:pointer;background:none;border:none}
+  .tabs{display:flex;gap:18px;padding:0 16px 12px;overflow-x:auto;font-size:14px;color:var(--gray);white-space:nowrap}
+  .tabs::-webkit-scrollbar{display:none}
+  .tabs .t{padding-bottom:8px;cursor:pointer}
+  .tabs .t.on{color:var(--ink);font-weight:700;border-bottom:2px solid var(--blue)}
+
+  .banner{margin:16px;border-radius:18px;overflow:hidden;cursor:pointer;position:relative;background:linear-gradient(135deg,#2b6ef2,#1b4fd0);color:#fff;box-shadow:0 8px 22px rgba(43,110,242,.35);transition:transform .12s}
+  .banner:active{transform:scale(.98)}
+  .banner .inner{padding:22px 20px;display:flex;align-items:center;gap:14px;min-height:118px}
+  .banner .cup{font-size:44px}
+  .banner h3{font-size:17px;line-height:1.35;font-weight:800}
+  .banner p{font-size:12.5px;opacity:.9;margin-top:6px}
+  .banner .pg{position:absolute;right:12px;bottom:10px;background:rgba(0,0,0,.25);color:#fff;font-size:11px;padding:3px 9px;border-radius:20px}
+  .banner .tapicon{position:absolute;right:14px;top:14px;font-size:11px;background:rgba(255,255,255,.2);padding:4px 8px;border-radius:20px}
+
+  .search{margin:0 16px;display:flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px 14px;color:var(--gray);font-size:14px}
+  .sec{margin:22px 16px 0}
+  .sec-h{display:flex;align-items:center;margin-bottom:12px}
+  .sec-h h4{font-size:16px;font-weight:800}
+  .sec-h .more{margin-left:auto;font-size:12px;color:var(--gray);cursor:pointer}
+  .cat-big{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .cat-sm{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:10px}
+  .card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px;cursor:pointer;transition:transform .1s}
+  .card:active{transform:scale(.97)}
+  .cat-big .card{height:104px;display:flex;flex-direction:column;justify-content:space-between}
+  .cat-sm .card{height:90px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;text-align:center;font-size:13px;font-weight:600}
+  .ci{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px}
+  .cat-big .card b{font-size:15px}.cat-big .card span{font-size:12px;color:var(--gray)}
+  .new-banner{margin-top:10px;background:linear-gradient(135deg,#12b76a,#0e9c5a);color:#fff;border-radius:16px;padding:16px 18px;display:flex;align-items:center;gap:10px;font-weight:700}
+  .new-banner .tag{background:#fff;color:#0e9c5a;font-size:11px;font-weight:800;padding:2px 8px;border-radius:6px}
+  .hscroll{display:flex;gap:12px;overflow-x:auto;padding:2px 2px 6px}
+  .hscroll::-webkit-scrollbar{display:none}
+  .qcard{min-width:150px;background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px}
+  .qcard .thumb{height:90px;border-radius:12px;background:var(--blue-l);margin-bottom:10px;display:flex;align-items:center;justify-content:center;font-size:28px}
+  .qcard b{font-size:14px}.qcard .price{color:var(--blue);font-weight:800;font-size:15px;margin-top:6px}.qcard .sub{font-size:11px;color:var(--gray);margin-top:2px}
+  .footer{padding:24px 16px 90px;color:#9aa1ac;font-size:11px;line-height:1.7}
+  .tabbar{position:sticky;bottom:0;background:#fff;border-top:1px solid var(--line);display:flex;z-index:20}
+  .tabbar .tb{flex:1;text-align:center;padding:10px 0 12px;font-size:10px;color:var(--gray);cursor:pointer}
+  .tabbar .tb .ic{font-size:19px;display:block;margin-bottom:3px}
+  .tabbar .tb.on{color:var(--blue);font-weight:700}
+
+  .btn-primary{display:block;width:100%;text-align:center;background:var(--blue);color:#fff;border:none;border-radius:14px;padding:16px;font-size:15px;font-weight:800;cursor:pointer;box-shadow:0 6px 16px rgba(43,110,242,.3)}
+  .btn-primary:active{transform:scale(.99)}
+  .blk{background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px;margin-bottom:14px}
+  .blk h5{font-size:15px;font-weight:800;margin-bottom:14px}
+  .note{font-size:11.5px;color:var(--blue-d);background:var(--blue-l);border-radius:10px;padding:10px 12px;margin-top:12px;line-height:1.5}
+
+  /* ===== EVENT PAGE ===== */
+  .ev-hero{background:linear-gradient(160deg,#2b6ef2,#1b4fd0);color:#fff;padding:34px 22px 40px;text-align:center}
+  .ev-hero .cup{font-size:58px}
+  .ev-hero h2{font-size:22px;margin-top:14px;line-height:1.35;font-weight:800}
+  .ev-hero p{font-size:13px;opacity:.92;margin-top:10px;line-height:1.6}
+  .ev-body{padding:20px 18px 30px}
+  .howto{display:flex;gap:12px;margin-bottom:14px}
+  .howto:last-child{margin-bottom:0}
+  .howto .num{width:26px;height:26px;flex-shrink:0;border-radius:50%;background:var(--blue);color:#fff;font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:center}
+  .howto b{font-size:14px}.howto span{font-size:12.5px;color:var(--gray);display:block;margin-top:3px;line-height:1.5}
+  .benefit{display:flex;gap:12px;align-items:flex-start;padding:12px;border-radius:12px;background:var(--bg);margin-bottom:10px}
+  .benefit:last-child{margin-bottom:0}
+  .benefit .bi{font-size:24px}.benefit b{font-size:14px}.benefit p{font-size:12.5px;color:var(--gray);margin-top:3px;line-height:1.5}
+
+  /* ===== LANDING / SIGNUP (invitee) ===== */
+  .land{min-height:100%;background:linear-gradient(180deg,#2b6ef2,#1b4fd0);color:#fff;padding:40px 24px;text-align:center;display:flex;flex-direction:column}
+  .land .friend{background:rgba(255,255,255,.15);border-radius:16px;padding:14px;font-size:13px;margin-bottom:24px}
+  .land .em{font-size:64px;margin-top:20px}
+  .land h2{font-size:24px;font-weight:800;margin-top:16px;line-height:1.35}
+  .land p{font-size:14px;opacity:.9;margin-top:12px;line-height:1.6}
+  .land .spacer{flex:1}
+  .signup{padding:24px;background:#fff;min-height:100%}
+  .field{margin-bottom:14px}
+  .field label{font-size:12px;color:var(--gray);font-weight:600}
+  .field .fake{margin-top:6px;border:1px solid var(--line);border-radius:12px;padding:14px;font-size:14px;color:#aab1bd;background:var(--bg)}
+  .agree{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--gray);margin:16px 0 4px}
+  .agree .box{width:18px;height:18px;border-radius:5px;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px}
+  /* invitee completion PAGE */
+  .done-hero{background:linear-gradient(160deg,#12b76a,#0e9c5a);color:#fff;padding:44px 24px;text-align:center}
+  .done-hero .em{font-size:64px}
+  .done-hero h2{font-size:24px;font-weight:800;margin-top:14px;line-height:1.35}
+  .done-hero p{font-size:13px;opacity:.92;margin-top:12px;line-height:1.6}
+  .gift{display:flex;align-items:center;gap:12px;background:var(--bg);border-radius:14px;padding:14px;margin-bottom:14px}
+  .gift .g{width:50px;height:50px;border-radius:12px;background:#fff;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:26px}
+  .gift b{font-size:14px}.gift span{font-size:12px;color:var(--gray);display:block;margin-top:2px}
+  .badge-auto{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;color:var(--green);background:#e7f7ef;padding:5px 10px;border-radius:20px}
+
+  /* ===== REWARD (inviter) ===== */
+  .rw-top{background:linear-gradient(160deg,#12b76a,#0e9c5a);color:#fff;padding:28px 22px 30px;text-align:center}
+  .rw-top .cap{font-size:12px;opacity:.9}
+  .rw-top h2{font-size:16px;margin-top:4px;font-weight:700;opacity:.95}
+  .rw-top .big{font-size:40px;font-weight:800;margin-top:8px}
+  .rw-top .big small{font-size:18px;opacity:.85;font-weight:600}
+  .progress{height:10px;background:rgba(255,255,255,.3);border-radius:20px;margin-top:16px;overflow:hidden}
+  .progress i{display:block;height:100%;width:60%;background:#fff;border-radius:20px}
+  .rw-top .subcap{font-size:11px;opacity:.85;margin-top:10px}
+  .rw-body{padding:18px}
+  .share{display:flex;gap:10px;margin-top:12px}
+  .share button{flex:1;border:none;border-radius:12px;padding:13px;font-size:13px;font-weight:700;cursor:pointer}
+  .share .kko{background:var(--kko);color:#3c1e1e}.share .cp{background:var(--blue-l);color:var(--blue-d)}
+  .hist{display:flex;align-items:center;gap:12px;padding:14px 4px;border-bottom:1px solid var(--line)}
+  .hist:last-child{border-bottom:none}
+  .hist .av{width:38px;height:38px;border-radius:50%;background:var(--blue-l);display:flex;align-items:center;justify-content:center;font-size:16px}
+  .hist b{font-size:14px}.hist span{font-size:12px;color:var(--gray);display:block;margin-top:2px}
+  .chip{margin-left:auto;font-size:11px;font-weight:700;padding:5px 10px;border-radius:20px}
+  .chip.done{background:#e7f7ef;color:var(--green)}.chip.wait{background:#fff4e5;color:#b26b00}
+
+  .admin-toggle{margin:6px 16px 26px;text-align:center;border:1px dashed #c2c8d2;background:#fff;border-radius:12px;padding:13px;font-size:13px;color:var(--gray);cursor:pointer}
+
+  /* admin */
+  .admin{background:#fff;min-height:100%}
+  .adm-head{padding:18px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px}
+  .kpis{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:16px}
+  .kpi{border:1px solid var(--line);border-radius:14px;padding:14px}
+  .kpi .lab{font-size:11px;color:var(--gray)}.kpi .val{font-size:20px;font-weight:800;margin-top:6px}
+  .kpi .delta{font-size:11px;margin-top:4px;font-weight:700}.kpi .up{color:var(--green)}.kpi .down{color:var(--red)}
+  .table{margin:16px;border:1px solid var(--line);border-radius:14px;overflow:hidden;font-size:12px}
+  .table .tr{display:grid;grid-template-columns:1.2fr 1fr .9fr .9fr;padding:11px 12px;border-bottom:1px solid var(--line);align-items:center}
+  .table .tr:last-child{border-bottom:none}.table .th{background:var(--bg);font-weight:700;color:#4b5563}
+
+  /* ===== KAKAO TALK (invitee entry) ===== */
+  .kko-head{background:#a3bfd4;padding:14px 16px;display:flex;align-items:center;gap:10px;color:#1a2733;font-weight:700;font-size:15px}
+  .kko-head .b{background:none;border:none;font-size:18px;cursor:pointer;color:#1a2733}
+  .kko-wrap{background:#b2c7d9;min-height:100%;padding:16px}
+  .kko-date{text-align:center;font-size:11px;color:#5a6b7a;background:rgba(0,0,0,.08);width:fit-content;margin:0 auto 16px;padding:4px 12px;border-radius:20px}
+  .kko-line{display:flex;gap:8px;margin-bottom:14px}
+  .kko-line .prof{width:40px;height:40px;border-radius:14px;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+  .kko-col{max-width:78%}
+  .kko-name{font-size:12px;color:#3a4a58;margin-bottom:4px}
+  .kko-card{background:#fff;border-radius:4px 16px 16px 16px;overflow:hidden;cursor:pointer;box-shadow:0 1px 2px rgba(0,0,0,.1);transition:transform .12s}
+  .kko-card:active{transform:scale(.98)}
+  .kko-img{height:120px;background:linear-gradient(135deg,#2b6ef2,#1b4fd0);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+  .kko-img .cup{font-size:38px}
+  .kko-img b{font-size:14px;margin-top:6px;padding:0 14px;line-height:1.35}
+  .kko-txt{padding:14px}
+  .kko-txt p{font-size:13px;line-height:1.55;color:#333}
+  .kko-btn{border-top:1px solid var(--line);padding:13px;text-align:center;color:var(--blue);font-weight:700;font-size:14px}
+  .kko-time{font-size:10px;color:#5a6b7a;align-self:flex-end;margin-left:4px}
+  .kko-tap{text-align:center;font-size:11px;color:#3a4a58;background:rgba(255,255,255,.5);border-radius:20px;padding:6px 12px;width:fit-content;margin:4px auto 0}
+
+  .hidden{display:none}
+  .hint{max-width:390px;margin:14px auto 0;text-align:center;font-size:12px;color:#5b6470;line-height:1.6}
+  #toast{position:fixed;left:50%;bottom:40px;transform:translateX(-50%);background:#12151c;color:#fff;padding:12px 20px;border-radius:30px;font-size:13px;opacity:0;transition:opacity .25s;pointer-events:none;z-index:99}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="modebar">
+    <button id="m-inviter" class="on" onclick="setMode('inviter')">👤 초대한 회원 (구매완료)</button>
+    <button id="m-invitee" onclick="setMode('invitee')">🎁 초대받은 회원</button>
+  </div>
+  <div class="flowbar" id="flow"></div>
+
+  <div class="phone">
+    <div class="screen-scroll" id="scroll">
+
+      <!-- ============ HOME (inviter) ============ -->
+      <section id="s-home">
+        <div class="navbar">
+          <div class="navrow"><div class="logo">rentre</div><div class="spacer"></div><button class="icobtn">🔔</button></div>
+          <div class="tabs"><div class="t on">가전렌탈</div><div class="t">인터넷</div><div class="t">상조가전</div><div class="t">타이어</div><div class="t">스토리</div><div class="t">이벤트</div><div class="t">사업자</div></div>
+        </div>
+
+        <div class="banner" onclick="go('event')">
+          <span class="tapicon">👆 클릭</span>
+          <div class="inner"><div class="cup">☕</div><div>
+            <h3>설치인증 완료하신 고객님,<br>친구 초대하시면 커피쿠폰 드려요~</h3>
+            <p>지금 초대하고 커피 한 잔의 여유를 선물하세요</p></div></div>
+          <span class="pg">1 / 6</span>
+        </div>
+
+        <div class="search">🔍 어떤 제품을 찾으세요?</div>
+        <div class="sec"><div class="sec-h"><h4>인기 카테고리</h4></div>
+          <div class="cat-big">
+            <div class="card"><div class="ci" style="background:#eaf1ff">💧</div><b>정수기</b><span>인기 렌탈 1위</span></div>
+            <div class="card"><div class="ci" style="background:#fff0e6">🌬️</div><b>공기청정기</b><span>미세먼지 케어</span></div></div>
+          <div class="cat-sm">
+            <div class="card"><div class="ci" style="background:#e9f7ef">🧊</div>냉장고</div>
+            <div class="card"><div class="ci" style="background:#fdeef2">🫧</div>비데</div>
+            <div class="card"><div class="ci" style="background:#eef0fb">🛏️</div>안마의자</div></div>
+          <div class="new-banner"><span class="tag">NEW</span>이번 달 신규 렌탈 상품 모아보기 →</div>
+        </div>
+        <div class="sec"><div class="sec-h"><h4>실시간 견적 비교</h4><span class="more">전체보기 ›</span></div>
+          <div class="hscroll">
+            <div class="qcard"><div class="thumb">💧</div><b>코웨이 정수기</b><div class="price">월 19,900원</div><div class="sub">3년 약정</div></div>
+            <div class="qcard"><div class="thumb">🌬️</div><b>LG 공기청정기</b><div class="price">월 24,500원</div><div class="sub">4년 약정</div></div>
+            <div class="qcard"><div class="thumb">🧊</div><b>삼성 냉장고</b><div class="price">월 32,000원</div><div class="sub">5년 약정</div></div></div>
+        </div>
+        <div class="footer">(주)렌트리 · 고객센터 1600-0000<br>이용약관 · 개인정보처리방침 · © rentre</div>
+        <div class="tabbar"><div class="tb on"><span class="ic">📊</span>견적비교</div><div class="tb"><span class="ic">💬</span>후기</div><div class="tb"><span class="ic">🗨️</span>채팅</div><div class="tb"><span class="ic">📁</span>보관함</div><div class="tb"><span class="ic">☰</span>더보기</div></div>
+      </section>
+
+      <!-- ============ EVENT PAGE (inviter) ============ -->
+      <section id="s-event" class="hidden">
+        <div class="navbar"><div class="navrow"><button class="backbtn" onclick="go('home')">‹ 홈</button><div class="spacer"></div><div class="logo" style="font-size:16px">이벤트</div></div></div>
+        <div class="ev-hero"><div class="cup">☕</div><h2>친구 초대하고<br>커피 기프티콘 받기</h2><p>친구가 가입하면 둘 다 쿠폰 지급!<br>월 최대 5회 · 매달 1일 초기화</p></div>
+        <div class="ev-body">
+          <div class="blk">
+            <h5>참여 방법</h5>
+            <div class="howto"><div class="num">1</div><div><b>내 초대 링크 공유</b><span>카카오톡 또는 링크 복사로 친구에게 전달</span></div></div>
+            <div class="howto"><div class="num">2</div><div><b>친구가 링크로 가입</b><span>초대 링크로 들어와 회원가입 완료</span></div></div>
+            <div class="howto"><div class="num">3</div><div><b>기프티콘 자동 발송</b><span>가입 확인 후 일주일 내 커피 기프티콘이 자동 발송</span></div></div>
+          </div>
+          <div class="blk">
+            <h5>혜택</h5>
+            <div class="benefit"><div class="bi">🎁</div><div><b>초대자 (나)</b><p>초대 성공 시마다 커피 기프티콘 · 월 최대 5회, 매달 초기화</p></div></div>
+            <div class="benefit"><div class="bi">🏷️</div><div><b>피초대자 (친구)</b><p>가입 시 렌트리 웰컴 쿠폰</p></div></div>
+          </div>
+          <button class="btn-primary" onclick="go('reward')">내 리워드 받으러 가기 →</button>
+        </div>
+      </section>
+
+      <!-- ============ REWARD (inviter) ============ -->
+      <section id="s-reward" class="hidden">
+        <div class="navbar"><div class="navrow"><button class="backbtn" onclick="go('event')">‹ 이벤트</button><div class="spacer"></div><div class="logo" style="font-size:16px">내 리워드</div></div></div>
+        <div class="rw-top">
+          <div class="cap">이번 달 받은 리워드</div><h2>커피 기프티콘</h2>
+          <div class="big">3<small> / 5회</small></div>
+          <div class="progress"><i></i></div>
+          <div class="subcap">월 최대 5회까지 · 매달 1일 초기화</div>
+        </div>
+        <div class="rw-body">
+          <div class="blk">
+            <h5>초대 링크 공유</h5>
+            <div style="background:var(--bg);border-radius:10px;padding:12px;font-size:12px;color:var(--gray);word-break:break-all">https://rentre.kr/invite/katie-9a3f</div>
+            <div class="share"><button class="kko" onclick="toast('카카오톡 공유 (프로토타입)')">💬 카카오톡 공유</button><button class="cp" onclick="toast('링크가 복사되었습니다')">🔗 링크 복사</button></div>
+          </div>
+          <div class="blk">
+            <h5>초대 이력</h5>
+            <div class="hist"><div class="av">👤</div><div><b>김민지님</b><span>07.05 · 가입완료 · 기프티콘 발송</span></div><span class="chip done">지급완료</span></div>
+            <div class="hist"><div class="av">👤</div><div><b>이서준님</b><span>07.03 · 가입완료 · 기프티콘 발송</span></div><span class="chip done">지급완료</span></div>
+            <div class="hist"><div class="av">👤</div><div><b>최유나님</b><span>06.30 · 가입 진행중</span></div><span class="chip wait">대기중</span></div>
+          </div>
+        </div>
+        <div class="admin-toggle" onclick="go('admin')">📊 (참고용) 관리자 화면 보기 →</div>
+      </section>
+
+      <!-- ============ ADMIN ============ -->
+      <section id="s-admin" class="hidden">
+        <div class="admin">
+          <div class="adm-head"><button class="backbtn" onclick="go('reward')">‹ 뒤로</button><b style="margin-left:auto">마케팅 · 추천 리워드</b></div>
+          <div style="display:flex;gap:8px;padding:14px 16px 0">
+            <button class="tb2 on" onclick="admTab('dash',this)" style="flex:1;padding:9px;border-radius:10px;border:1px solid var(--blue);background:var(--blue);color:#fff;font-size:12px;font-weight:700;cursor:pointer">성과 대시보드</button>
+            <button class="tb2" onclick="admTab('list',this)" style="flex:1;padding:9px;border-radius:10px;border:1px solid var(--line);background:#fff;color:var(--gray);font-size:12px;font-weight:700;cursor:pointer">기프티콘 발송 목록</button>
+          </div>
+          <div id="adm-dash">
+            <div class="kpis">
+              <div class="kpi"><div class="lab">링크 발급 고객수</div><div class="val">3,240</div><div class="delta up">▲ 6.7%</div></div>
+              <div class="kpi"><div class="lab">링크 클릭 후 유입 고객수</div><div class="val">9,150</div><div class="delta up">▲ 10.2%</div></div>
+              <div class="kpi"><div class="lab">가입 전환수</div><div class="val">4,120</div><div class="delta up">▲ 8.1%</div></div>
+              <div class="kpi"><div class="lab">전환율</div><div class="val">14.5%</div><div class="delta down">▼ 2.3%</div></div>
+              <div class="kpi"><div class="lab">기프티콘 자동발송</div><div class="val">4,003건</div><div class="delta up">▲ 9.4%</div></div>
+              <div class="kpi"><div class="lab">지급 리워드 총액</div><div class="val">₩8.2M</div><div class="delta up">▲ 15.0%</div></div>
+            </div>
+            <div class="table"><div class="tr th"><div>상위 초대자</div><div>가입전환</div><div>클릭</div><div>발송</div></div>
+              <div class="tr"><div>katie***</div><div>32</div><div>210</div><div>5회</div></div>
+              <div class="tr"><div>minji***</div><div>28</div><div>190</div><div>5회</div></div>
+              <div class="tr"><div>seojun***</div><div>21</div><div>150</div><div>4회</div></div></div>
+          </div>
+          <div id="adm-list" class="hidden">
+            <div class="table" style="margin-top:16px"><div class="tr th"><div>발송일시</div><div>대상</div><div>구분</div><div>기프티콘</div></div>
+              <div class="tr"><div>07.05 14:22</div><div>katie***</div><div>초대자</div><div>커피 3회차</div></div>
+              <div class="tr"><div>07.05 14:22</div><div>minji***</div><div>피초대자</div><div>가입쿠폰</div></div>
+              <div class="tr"><div>07.03 09:10</div><div>katie***</div><div>초대자</div><div>커피 2회차</div></div>
+              <div class="tr"><div>07.01 20:41</div><div>seojun***</div><div>피초대자</div><div>가입쿠폰</div></div></div>
+            <div style="text-align:center;padding:0 0 20px;font-size:12px;color:var(--gray)">‹ 1 2 3 ... 12 ›</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ KAKAO TALK (invitee entry) ============ -->
+      <section id="s-kkotalk" class="hidden">
+        <div class="kko-head"><button class="b">‹</button>렌트리 <span style="color:#5a6b7a;font-weight:500;font-size:13px">채널</span><div style="margin-left:auto"></div><button class="b">☰</button></div>
+        <div class="kko-wrap">
+          <div class="kko-date">2026년 7월 6일 오후 2:10</div>
+          <div class="kko-line">
+            <div class="prof">R</div>
+            <div class="kko-col">
+              <div class="kko-name">렌트리</div>
+              <div class="kko-card" onclick="go('login')">
+                <div class="kko-img"><div class="cup">🎁</div><b>친구가 회원님을 초대했어요!</b></div>
+                <div class="kko-txt"><p>김민지님이 렌트리에 회원님을 초대했어요.<br>지금 가입하면 <b>웰컴 쿠폰</b>을 바로 드려요 ☕</p></div>
+                <div class="kko-btn">가입하고 쿠폰 받기 ›</div>
+              </div>
+            </div>
+            <span class="kko-time">오후 2:10</span>
+          </div>
+          <div class="kko-tap">👆 메시지를 눌러 이벤트로 이동</div>
+        </div>
+      </section>
+
+      <!-- ============ LANDING (invitee) ============ -->
+      <section id="s-landing" class="hidden">
+        <div class="land">
+          <div class="navrow" style="padding:0 0 10px"><div class="logo" style="color:#fff">rentre</div></div>
+          <div class="friend">🎉 <b>김민지</b>님이 회원님을 초대했어요</div>
+          <div class="em">🎁</div>
+          <h2>가입하고<br>바로 쿠폰 받으세요</h2>
+          <p>렌트리 첫 가입 시<br>웰컴 쿠폰을 바로 드려요</p>
+          <div class="spacer"></div>
+          <button class="btn-primary" style="background:#fff;color:var(--blue)" onclick="go('login')">가입하고 쿠폰 받기 →</button>
+        </div>
+      </section>
+
+      <!-- ============ LOGIN LANDING (invitee) ============ -->
+      <section id="s-login" class="hidden">
+        <div class="navbar"><div class="navrow"><button class="backbtn" onclick="go('kkotalk')">‹ 뒤로</button><div class="spacer"></div><div class="logo" style="font-size:16px">로그인</div></div></div>
+        <div class="signup" style="display:flex;flex-direction:column;min-height:660px">
+          <div style="text-align:center;margin:28px 0 8px"><div class="logo" style="font-size:28px">rentre</div></div>
+          <div style="text-align:center;font-size:13px;color:var(--gray);margin-bottom:30px">간편하게 로그인하고 쿠폰을 받으세요</div>
+          <button class="btn-primary" style="background:var(--kko);color:#3c1e1e;box-shadow:none" onclick="go('signup')">💬 카카오로 시작하기</button>
+          <button class="btn-primary" style="background:#03c75a;color:#fff;box-shadow:none;margin-top:10px" onclick="go('signup')"><b style="font-weight:900">N</b>&nbsp; 네이버로 시작하기</button>
+          <button class="btn-primary" style="background:#fff;color:var(--ink);border:1px solid var(--line);box-shadow:none;margin-top:10px" onclick="go('signup')">📱 휴대폰 번호로 시작하기</button>
+          <div style="flex:1"></div>
+          <div style="text-align:center;font-size:12px;color:var(--gray)">이미 계정이 있으신가요? <b style="color:var(--blue);cursor:pointer" onclick="go('signup')">로그인</b></div>
+          <div style="text-align:center;font-size:11px;color:#aab1bd;margin-top:14px">로그인 시 초대한 친구와 자동으로 연결됩니다</div>
+        </div>
+      </section>
+
+      <!-- ============ SIGNUP (invitee) ============ -->
+      <section id="s-signup" class="hidden">
+        <div class="navbar"><div class="navrow"><button class="backbtn" onclick="go('login')">‹ 뒤로</button><div class="spacer"></div><div class="logo" style="font-size:16px">회원가입</div></div></div>
+        <div class="signup">
+          <div style="font-size:13px;color:var(--gray);margin-bottom:18px">간편하게 가입하고 쿠폰을 받으세요</div>
+          <div class="field"><label>휴대폰 번호</label><div class="fake">010-0000-0000</div></div>
+          <div class="field"><label>인증번호</label><div class="fake">인증번호 6자리</div></div>
+          <div class="field"><label>이름</label><div class="fake">이름 입력</div></div>
+          <div class="agree"><span class="box">✓</span> (필수) 서비스 이용약관 및 개인정보 처리방침 동의</div>
+          <div class="agree"><span class="box">✓</span> (선택) 마케팅 정보 수신 동의</div>
+          <button class="btn-primary" style="margin-top:22px" onclick="go('complete')">가입 완료하고 쿠폰 받기</button>
+          <div style="text-align:center;font-size:11px;color:#aab1bd;margin-top:14px">가입 즉시 초대한 친구와 자동으로 연결됩니다</div>
+        </div>
+      </section>
+
+      <!-- ============ COMPLETE PAGE (invitee) ============ -->
+      <section id="s-complete" class="hidden">
+        <div class="done-hero"><div class="em">🎉</div><h2>가입 완료!<br>쿠폰이 발송됐어요</h2><p>김민지님의 초대로 연결되었어요<br>기프티콘은 카카오톡으로 자동 발송됩니다</p></div>
+        <div class="rw-body">
+          <div class="blk">
+            <h5>받은 쿠폰</h5>
+            <div class="gift"><div class="g">🎟️</div><div style="flex:1"><b>렌트리 웰컴 쿠폰</b><span>발송 완료 · 카카오톡 확인</span></div><span class="badge-auto">⚡ 자동</span></div>
+          </div>
+          <button class="btn-primary" onclick="toast('홈으로 이동 (프로토타입)')">쿠폰 확인하고 시작하기</button>
+        </div>
+      </section>
+
+    </div><!-- /screen-scroll -->
+  </div><!-- /phone -->
+
+  <div class="hint" id="hint"></div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+  const flows={
+    inviter:[['home','① 홈 (배너)'],['event','② 이벤트 페이지'],['reward','③ 내 리워드'],['admin','④ 어드민(참고)']],
+    invitee:[['kkotalk','① 카카오톡 초대 메시지'],['login','② 로그인 랜딩'],['signup','③ 간편 가입'],['complete','④ 가입완료·보상']]
+  };
+  const hints={
+    inviter:'구매완료 회원 → 배너 클릭 → 이벤트 페이지 → 리워드(초대링크·초대이력) → 어드민.',
+    invitee:'카카오톡 초대 메시지 → 로그인 랜딩 → 간편 가입 → 가입완료(기프티콘 자동발송).'
+  };
+  let mode='inviter';
+  const all=['home','event','reward','admin','kkotalk','landing','login','signup','complete'];
+  function renderFlow(active){
+    const f=flows[mode];
+    document.getElementById('flow').innerHTML=f.map((s,i)=>
+      `<span class="step ${s[0]===active?'on':''}">${s[1]}</span>`+(i<f.length-1?'<span class="arw">›</span>':'')).join('');
+    document.getElementById('hint').textContent=hints[mode];
+  }
+  function show(id){all.forEach(s=>document.getElementById('s-'+s).classList.add('hidden'));document.getElementById('s-'+id).classList.remove('hidden');document.getElementById('scroll').scrollTop=0;}
+  function go(name){show(name);renderFlow(name);}
+  function setMode(m){
+    mode=m;
+    document.getElementById('m-inviter').classList.toggle('on',m==='inviter');
+    document.getElementById('m-invitee').classList.toggle('on',m==='invitee');
+    go(m==='inviter'?'home':'kkotalk');
+  }
+  function admTab(which,btn){
+    document.getElementById('adm-dash').classList.toggle('hidden',which!=='dash');
+    document.getElementById('adm-list').classList.toggle('hidden',which!=='list');
+    document.querySelectorAll('.tb2').forEach(b=>{b.style.background='#fff';b.style.color='#6b7280';b.style.borderColor='#eceef2'});
+    btn.style.background='#2b6ef2';btn.style.color='#fff';btn.style.borderColor='#2b6ef2';
+  }
+  let tt;function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.style.opacity=1;clearTimeout(tt);tt=setTimeout(()=>t.style.opacity=0,1600);}
+  setMode('inviter');
+</script>
+</body>
+</html>
