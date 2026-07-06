@@ -167,6 +167,26 @@
   .kko-time{font-size:10px;color:#5a6b7a;align-self:flex-end;margin-left:4px}
   .kko-tap{text-align:center;font-size:11px;color:#3a4a58;background:rgba(255,255,255,.5);border-radius:20px;padding:6px 12px;width:fit-content;margin:4px auto 0}
 
+  /* ===== COUPON WALLET (쿠폰함) ===== */
+  .coupons{background:#fff;min-height:100%}
+  .cpn-head{display:flex;align-items:center;padding:22px 18px 8px}
+  .cpn-head h2{font-size:22px;font-weight:800}
+  .cpn-head .avail{margin-left:auto;font-size:13px;color:var(--gray)}
+  .cpn-head .avail b{color:var(--ink);font-size:15px}
+  .cpn-input{display:flex;gap:8px;padding:8px 18px 16px}
+  .cpn-input input{flex:1;border:1px solid var(--line);border-radius:12px;padding:14px;font-size:14px;background:var(--bg)}
+  .cpn-input button{background:#12151c;color:#fff;border:none;border-radius:12px;padding:0 20px;font-size:14px;font-weight:700;cursor:pointer}
+  .cpn{margin:0 18px 14px;border:1px solid var(--line);border-radius:16px;padding:18px}
+  .cpn.new{border:1.5px solid var(--blue);background:#f7faff}
+  .cpn-row{display:flex;align-items:center;margin-bottom:12px}
+  .cpn-cat{font-size:11px;font-weight:700;color:#fff;background:var(--blue);padding:4px 11px;border-radius:20px}
+  .cpn-cat.green{background:var(--green)}
+  .cpn-more{margin-left:auto;font-size:12px;color:var(--gray);cursor:pointer}
+  .cpn-title{font-size:15px;font-weight:700}
+  .cpn-amt{font-size:24px;font-weight:800;color:#ff7a1a;margin-top:8px}
+  .cpn-tag{display:inline-block;font-size:12px;color:#6b6ea8;background:#eeeefb;padding:5px 10px;border-radius:8px;margin-top:12px}
+  .cpn-exp{font-size:12px;color:var(--gray);margin-top:10px}
+
   .hidden{display:none}
   .hint{max-width:390px;margin:14px auto 0;text-align:center;font-size:12px;color:#5b6470;line-height:1.6}
   #toast{position:fixed;left:50%;bottom:40px;transform:translateX(-50%);background:#12151c;color:#fff;padding:12px 20px;border-radius:30px;font-size:13px;opacity:0;transition:opacity .25s;pointer-events:none;z-index:99}
@@ -369,7 +389,48 @@
             <h5>받은 쿠폰</h5>
             <div class="gift"><div class="g">🎟️</div><div style="flex:1"><b>렌트리 웰컴 쿠폰</b><span>발송 완료 · 카카오톡 확인</span></div><span class="badge-auto">⚡ 자동</span></div>
           </div>
-          <button class="btn-primary" onclick="toast('홈으로 이동 (프로토타입)')">쿠폰 확인하고 시작하기</button>
+          <button class="btn-primary" onclick="go('coupons')">쿠폰 확인하러 가기 →</button>
+        </div>
+      </section>
+
+      <!-- ============ COUPON WALLET (invitee) ============ -->
+      <section id="s-coupons" class="hidden">
+        <div class="coupons">
+          <div class="navbar"><div class="navrow"><button class="backbtn" onclick="go('complete')">‹</button><div class="spacer"></div></div></div>
+          <div class="cpn-head"><h2>쿠폰함</h2><span class="avail">사용가능 <b>4</b></span></div>
+          <div class="cpn-input"><input placeholder="쿠폰코드를 입력해주세요"><button onclick="toast('쿠폰 등록 (프로토타입)')">등록</button></div>
+
+          <div class="cpn new">
+            <div class="cpn-row"><span class="cpn-cat green">웰컴</span><span class="cpn-more">상세보기 ›</span></div>
+            <div class="cpn-title">🎁 신규 가입 웰컴 쿠폰</div>
+            <div class="cpn-amt">10,000원</div>
+            <div class="cpn-tag">렌트리 첫 주문 전용</div>
+            <div class="cpn-exp">가입일로부터 30일 이내 사용 가능</div>
+          </div>
+
+          <div class="cpn">
+            <div class="cpn-row"><span class="cpn-cat">인터넷</span><span class="cpn-more">상세보기 ›</span></div>
+            <div class="cpn-title">[100MB + IPTV] 추가 지원금</div>
+            <div class="cpn-amt">50,000원</div>
+            <div class="cpn-tag">렌트리 안심구독 전용</div>
+            <div class="cpn-exp">27.06.17까지 주문확정시 사용가능</div>
+          </div>
+
+          <div class="cpn">
+            <div class="cpn-row"><span class="cpn-cat">인터넷</span><span class="cpn-more">상세보기 ›</span></div>
+            <div class="cpn-title">[500MB] 추가 지원금</div>
+            <div class="cpn-amt">50,000원</div>
+            <div class="cpn-tag">렌트리 안심구독 전용</div>
+            <div class="cpn-exp">27.06.17까지 주문확정시 사용가능</div>
+          </div>
+
+          <div class="cpn" style="margin-bottom:26px">
+            <div class="cpn-row"><span class="cpn-cat">인터넷</span><span class="cpn-more">상세보기 ›</span></div>
+            <div class="cpn-title">[500MB + IPTV] 추가 지원금</div>
+            <div class="cpn-amt">50,000원</div>
+            <div class="cpn-tag">렌트리 안심구독 전용</div>
+            <div class="cpn-exp">27.06.17까지 주문확정시 사용가능</div>
+          </div>
         </div>
       </section>
 
@@ -384,14 +445,14 @@
 <script>
   const flows={
     inviter:[['home','① 홈 (배너)'],['event','② 이벤트 페이지'],['reward','③ 내 리워드'],['admin','④ 어드민(참고)']],
-    invitee:[['kkotalk','① 카카오톡 초대 메시지'],['login','② 로그인 랜딩'],['signup','③ 간편 가입'],['complete','④ 가입완료·보상']]
+    invitee:[['kkotalk','① 카카오톡 초대 메시지'],['login','② 로그인 랜딩'],['signup','③ 간편 가입'],['complete','④ 가입완료·보상'],['coupons','⑤ 쿠폰함']]
   };
   const hints={
     inviter:'구매완료 회원 → 배너 클릭 → 이벤트 페이지 → 리워드(초대링크·초대이력) → 어드민.',
-    invitee:'카카오톡 초대 메시지 → 로그인 랜딩 → 간편 가입 → 가입완료(기프티콘 자동발송).'
+    invitee:'카카오톡 초대 메시지 → 로그인 랜딩 → 간편 가입 → 가입완료 → 쿠폰함(기프티콘 자동발송).'
   };
   let mode='inviter';
-  const all=['home','event','reward','admin','kkotalk','landing','login','signup','complete'];
+  const all=['home','event','reward','admin','kkotalk','landing','login','signup','complete','coupons'];
   function renderFlow(active){
     const f=flows[mode];
     document.getElementById('flow').innerHTML=f.map((s,i)=>
