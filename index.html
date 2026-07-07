@@ -90,6 +90,11 @@
   .benefit{display:flex;gap:12px;align-items:flex-start;padding:12px;border-radius:12px;background:var(--bg);margin-bottom:10px}
   .benefit:last-child{margin-bottom:0}
   .benefit .bi{font-size:24px}.benefit b{font-size:14px}.benefit p{font-size:12.5px;color:var(--gray);margin-top:3px;line-height:1.5}
+  .invite-cta{background:linear-gradient(160deg,#2b6ef2,#1b4fd0);border-radius:18px;padding:22px 18px;margin-bottom:14px;box-shadow:0 10px 26px rgba(43,110,242,.35);text-align:center;color:#fff}
+  .invite-cta .ic-title{font-size:18px;font-weight:800}
+  .invite-cta .ic-sub{font-size:12.5px;opacity:.92;margin:6px 0 16px}
+  .invite-cta .share button{padding:15px;font-size:14px}
+  .invite-cta .share .cp{background:#fff;color:var(--blue-d)}
 
   /* ===== LANDING / SIGNUP (invitee) ===== */
   .land{min-height:100%;background:linear-gradient(180deg,#2b6ef2,#1b4fd0);color:#fff;padding:40px 24px;text-align:center;display:flex;flex-direction:column}
@@ -255,11 +260,18 @@
             <div class="benefit"><div class="bi">🎁</div><div><b>나</b><p>초대 성공 시마다 커피 기프티콘 · 월 최대 5회, 매달 초기화</p></div></div>
             <div class="benefit"><div class="bi">🏷️</div><div><b>친구</b><p>가입 시 렌트리 웰컴 쿠폰</p></div></div>
           </div>
-          <div class="blk">
-            <h5>친구 초대하기</h5>
+          <div class="invite-cta">
+            <div class="ic-title">☕ 친구 초대하고 커피 받기</div>
+            <div class="ic-sub">아래 버튼으로 친구에게 바로 공유하세요</div>
             <div class="share" style="margin-top:0"><button class="kko" onclick="toast('카카오톡 공유 (프로토타입)')">💬 카카오톡 공유</button><button class="cp" onclick="toast('링크가 복사되었습니다')">🔗 링크 복사</button></div>
           </div>
-          <button class="btn-primary" style="background:#fff;color:var(--blue);border:1px solid var(--line);box-shadow:none" onclick="go('reward')">내 리워드 확인하기 →</button>
+          <div class="blk">
+            <h5>받은 사람 내역</h5>
+            <div class="hist"><div class="av">👤</div><div><b>김**님</b><span>07.05 · 가입완료 · 기프티콘 발송</span></div><span class="chip done">지급완료</span></div>
+            <div class="hist"><div class="av">👤</div><div><b>이**님</b><span>07.03 · 가입완료 · 기프티콘 발송</span></div><span class="chip done">지급완료</span></div>
+            <div class="hist"><div class="av">👤</div><div><b>최**님</b><span>06.30 · 가입 진행중</span></div><span class="chip wait">대기중</span></div>
+          </div>
+          <div class="admin-toggle" style="margin:6px 0 0" onclick="go('admin')">📊 (참고용) 관리자 화면 보기 →</div>
         </div>
       </section>
 
@@ -290,7 +302,7 @@
       <!-- ============ ADMIN ============ -->
       <section id="s-admin" class="hidden">
         <div class="admin">
-          <div class="adm-head"><button class="backbtn" onclick="go('reward')">‹ 뒤로</button><b style="margin-left:auto">마케팅 · 추천 리워드</b></div>
+          <div class="adm-head"><button class="backbtn" onclick="go('event')">‹ 뒤로</button><b style="margin-left:auto">마케팅 · 추천 리워드</b></div>
           <div style="display:flex;gap:8px;padding:14px 16px 0">
             <button class="tb2 on" onclick="admTab('dash',this)" style="flex:1;padding:9px;border-radius:10px;border:1px solid var(--blue);background:var(--blue);color:#fff;font-size:12px;font-weight:700;cursor:pointer">성과 대시보드</button>
             <button class="tb2" onclick="admTab('list',this)" style="flex:1;padding:9px;border-radius:10px;border:1px solid var(--line);background:#fff;color:var(--gray);font-size:12px;font-weight:700;cursor:pointer">기프티콘 발송 목록</button>
@@ -447,11 +459,11 @@
 
 <script>
   const flows={
-    inviter:[['home','① 홈 (배너)'],['event','② 이벤트 페이지'],['reward','③ 내 리워드'],['admin','④ 어드민(참고)']],
+    inviter:[['home','① 홈 (배너)'],['event','② 이벤트 페이지'],['admin','③ 어드민(참고)']],
     invitee:[['kkotalk','① 카카오톡 초대 메시지'],['login','② 로그인 랜딩'],['signup','③ 간편 가입'],['complete','④ 가입완료·보상'],['coupons','⑤ 쿠폰함']]
   };
   const hints={
-    inviter:'구매완료 회원 → 배너 클릭 → 이벤트 페이지 → 리워드(초대링크·초대이력) → 어드민.',
+    inviter:'구매완료 회원 → 배너 클릭 → 이벤트 페이지(공유 버튼·받은 사람 내역) → 어드민.',
     invitee:'카카오톡 초대 메시지 → 로그인 랜딩 → 간편 가입 → 가입완료 → 쿠폰함(기프티콘 자동발송).'
   };
   let mode='inviter';
